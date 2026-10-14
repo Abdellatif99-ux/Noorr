@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نور - تطبيقي الديني</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --brown-dark: #3E2723;
+  --brown: #6F4E37;
+  --brown-mid: #8B5A2B;
+  --brown-light: #C19A6B;
+  --beige: #F5EFE6;
+  --beige-dark: #EADBC8;
+  --gold: #C9A227;
+  --text: #2D1B15;
+  --muted: #8B7355;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Cairo', system-ui, sans-serif;
+  background: linear-gradient(180deg, #FAF6F0 0%, #F0E6D8 100%);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 90px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== الهيدر الرئيسي ===== */
+.header {
+  background: linear-gradient(135deg, var(--brown-dark) 0%, var(--brown) 50%, var(--brown-mid) 100%);
+  color: #fff;
+  padding: 24px 20px 28px;
+  border-radius: 0 0 28px 28px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(62, 39, 35, 0.25);
+}
+.header::before {
+  content: ""; position: absolute; top: -40px; left: -40px;
+  width: 160px; height: 160px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,162,39,0.25), transparent 70%);
+}
+.header::after {
+  content: ""; position: absolute; bottom: -60px; right: -30px;
+  width: 140px; height: 140px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%);
+}
+.header-top {
+  display: flex; justify-content: space-between; align-items: center;
+  position: relative; z-index: 1;
+}
+.greeting { font-size: 0.95rem; opacity: 0.85; margin-bottom: 4px; }
+.user-name { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.3px; }
+.app-logo { font-size: 2.2rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+
+/* ===== الهيدر الداخلي ===== */
+.sub-header {
+  background: linear-gradient(135deg, var(--brown-dark) 0%, var(--brown) 50%, var(--brown-mid) 100%);
+  color: #fff;
+  padding: 20px;
+  border-radius: 0 0 24px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 6px 18px rgba(62, 39, 35, 0.22);
+  position: relative;
+  overflow: hidden;
+}
+.sub-header::before {
+  content: ""; position: absolute; top: -30px; right: -30px;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,162,39,0.22), transparent 70%);
+}
+.sub-header-title { display: flex; align-items: center; gap: 12px; position: relative; z-index: 1; }
+.sub-header-icon { font-size: 1.8rem; }
+.sub-header-label { font-size: 0.8rem; opacity: 0.85; }
+.sub-header-main { font-size: 1.3rem; font-weight: 700; }
+.icon-btn {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ===== نظام الصفحات ===== */
+.page { display: none; padding-bottom: 20px; }
+.page.active { display: block; }
+
+/* ===== بطاقة الصلاة القادمة ===== */
+.prayer-card {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FBF6EE 100%);
+  border-radius: 20px;
+  padding: 20px;
+  margin: -18px 16px 0;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 6px 20px rgba(111, 78, 55, 0.15);
+  border: 1px solid rgba(193, 154, 107, 0.3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.prayer-info .label { font-size: 0.8rem; color: var(--muted); margin-bottom: 4px; }
+.prayer-info .name { font-size: 1.6rem; font-weight: 700; color: var(--brown-dark); }
+.prayer-info .time { font-size: 1rem; color: var(--brown-mid); margin-top: 4px; font-weight: 600; }
+.prayer-countdown {
+  text-align: left;
+  background: linear-gradient(135deg, var(--brown) 0%, var(--brown-mid) 100%);
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 14px;
+  min-width: 110px;
+}
+.prayer-countdown .cd-label { font-size: 0.7rem; opacity: 0.85; display: block; margin-bottom: 4px; }
+.prayer-countdown .cd-value { font-size: 0.95rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* ===== عناوين الأقسام ===== */
+.section-title {
+  display: flex; align-items: center; gap: 8px;
+  margin: 24px 20px 12px;
+  font-size: 1.05rem; font-weight: 700;
+  color: var(--brown-dark);
+}
+.section-title::before {
+  content: ""; width: 4px; height: 20px;
+  background: linear-gradient(180deg, var(--gold), var(--brown-mid));
+  border-radius: 4px;
+}
+
+/* ===== بطاقة الحديث ===== */
+.verse-card {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FBF6EE 100%);
+  border-radius: 20px;
+  padding: 22px 20px;
+  margin: 0 16px;
+  box-shadow: 0 4px 16px rgba(111, 78, 55, 0.1);
+  border: 1px solid rgba(193, 154, 107, 0.25);
+  position: relative;
+}
+.hadith-card::before {
+  content: "❝"; position: absolute;
+  font-size: 2.4rem; color: rgba(201, 162, 39, 0.22);
+  top: 4px; right: 16px; line-height: 1;
+}
+.hadith-text {
+  font-family: 'Cairo', sans-serif;
+  font-size: 1.1rem; font-weight: 600;
+  line-height: 1.9; color: var(--brown-dark);
+  padding: 0 10px; text-align: center;
+  margin-bottom: 14px; position: relative; z-index: 1;
+}
+.verse-ref { text-align: center; font-size: 0.85rem; color: var(--muted); font-weight: 600; }
+
+/* ===== الاختصارات ===== */
+.quick-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 12px; margin: 0 16px;
+}
+.quick-card {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FBF6EE 100%);
+  border-radius: 18px; padding: 18px 14px;
+  text-align: center; text-decoration: none;
+  color: var(--text);
+  border: 1px solid rgba(193, 154, 107, 0.25);
+  box-shadow: 0 3px 12px rgba(111, 78, 55, 0.08);
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+.quick-card:active { transform: scale(0.97); }
+.quick-icon { font-size: 1.8rem; margin-bottom: 8px; display: block; }
+.quick-title { font-size: 0.95rem; font-weight: 700; color: var(--brown-dark); }
+.quick-sub { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+
+/* ===== شريط التنقل ===== */
+.nav {
+  position: fixed; bottom: 0; right: 0; left: 0;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FBF6EE 100%);
+  border-top: 1px solid rgba(193, 154, 107, 0.3);
+  display: flex; justify-content: space-around;
+  padding: 8px 4px 12px;
+  box-shadow: 0 -4px 20px rgba(111, 78, 55, 0.08);
+  z-index: 100;
+}
+.nav-item {
+  flex: 1; background: none; border: none;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 2px; padding: 6px 4px;
+  color: var(--muted); font-family: inherit;
+  font-size: 0.7rem; cursor: pointer;
+  transition: color 0.2s; position: relative;
+}
+.nav-item .icon { font-size: 1.35rem; transition: transform 0.2s; }
+.nav-item.active { color: var(--brown-dark); font-weight: 700; }
+.nav-item.active .icon { transform: scale(1.15) translateY(-2px); }
+.nav-item.active::before {
+  content: ""; position: absolute; top: 0;
+  width: 28px; height: 3px;
+  border-radius: 0 0 4px 4px;
+  background: linear-gradient(90deg, var(--gold), var(--brown-mid));
+}
+.footer-space { height: 20px; }
+
+/* ===== صفحة الصلاة ===== */
+.date-bar {
+  margin: 16px 16px 0;
+  background: linear-gradient(135deg, #FFFFFF 0%, #FBF6EE 100%);
+  border-radius: 16px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgba(193, 154, 107, 0.25);
+  box-shadow: 0 3px 12px rgba(111, 78, 55, 0.08);
+}
+.date-bar .greg { font-size: 0.8rem; color: var(--muted); }
+.date-bar .hijri { font-size: 0.9rem; color: var(--brown-dark); font-weight: 700; }
+
+/* ===== زر تحديد الموقع ===== */
+.locate-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: calc(100% - 32px);
+  margin: 14px 16px 0;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--brown) 0%, var(--brown-mid) 100%);
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(111, 78, 55, 0.28);
+  transition: transform 0.15s;
+}
+.locate-btn:active { transform: scale(0.98); }
+.locate-btn:disabled { opacity: 0.6; cursor: wait; }
+.locate-btn .loc-icon { font-size: 1.15rem; }
+
+/* ===== بطاقة الصلاة القادمة الكبيرة ===== */
+.next-prayer-card {
+  margin: 16px 16px 0;
+  background: linear-gradient(135deg, var(--brown-dark) 0%, var(--brown) 60%, var(--brown-mid) 100%);
+  color: #fff;
+  border-radius: 22px;
+  padding: 24px 20px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(62, 39, 35, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+.next-prayer-card::before {
+  content: ""; position: absolute; top: -40px; right: -40px;
+  width: 140px; height: 140px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,162,39,0.3), transparent 70%);
+}
+.next-prayer-card .np-label { font-size: 0.85rem; opacity: 0.85; margin-bottom: 6px; position: relative; z-index: 1; }
+.next-prayer-card .np-name { font-size: 2.2rem; font-weight: 700; margin-bottom: 4px; position: relative; z-index: 1; }
+.next-prayer-card .np-time { font-size: 1.1rem; color: var(--gold); font-weight: 700; margin-bottom: 14px; position: relative; z-index: 1; }
+.next-prayer-card .np-countdown {
+  font-size: 1.5rem; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  background: rgba(0,0,0,0.25);
+  display: inline-block;
+  padding: 8px 20px; border-radius: 30px;
+  position: relative; z-index: 1;
+  letter-spacing: 2px;
+}
+
+/* ===== قائمة الصلوات ===== */
+.prayer-list {
+  margin: 16px;
+  background: linear-gradient(135deg, #FFFFFF 0%, #FBF6EE 100%);
+  border-radius: 20px;
+  border: 1px solid rgba(193, 154, 107, 0.25);
+  box-shadow: 0 4px 16px rgba(111, 78, 55, 0.08);
+  overflow: hidden;
+}
+.prayer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(193, 154, 107, 0.15);
+}
+.prayer-row:last-child { border-bottom: none; }
+.prayer-row.current {
+  background: linear-gradient(90deg, rgba(201,162,39,0.12) 0%, transparent 100%);
+  border-right: 4px solid var(--gold);
+}
+.prayer-row .p-name {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 1rem; font-weight: 600; color: var(--brown-dark);
+}
+.prayer-row .p-icon { font-size: 1.2rem; }
+.prayer-row .p-time {
+  font-size: 1.05rem; font-weight: 700;
+  color: var(--brown-mid);
+  font-variant-numeric: tabular-nums;
+}
+.prayer-row.current .p-time { color: var(--brown-dark); }
+
+/* ===== حالة التحميل / الخطأ ===== */
+.state-box {
+  margin: 16px;
+  padding: 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #FFFFFF 0%, #FBF6EE 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(193, 154, 107, 0.25);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* ===== بطاقة القبلة ===== */
+.qibla-card {
+  margin: 16px;
+  background: linear-gradient(135deg, #FFFFFF 0%, #FBF6EE 100%);
+  border-radius: 22px;
+  padding: 24px 20px;
+  border: 1px solid rgba(193, 154, 107, 0.25);
+  box-shadow: 0 4px 16px rgba(111, 78, 55, 0.08);
+  text-align: center;
+}
+.qibla-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--brown-dark);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.compass {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  margin: 0 auto 16px;
+}
+.compass-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, #FBF6EE 0%, #F0E6D8 100%);
+  border: 3px solid var(--brown-light);
+  box-shadow:
+    inset 0 0 20px rgba(111, 78, 55, 0.1),
+    0 6px 20px rgba(111, 78, 55, 0.15);
+}
+.compass-tick {
+  position: absolute;
+  left: 50%; top: 6px;
+  width: 2px; height: 10px;
+  background: rgba(139, 115, 85, 0.35);
+  transform-origin: 0 104px;
+  transform: translateX(-50%);
+}
+.compass-label {
+  position: absolute;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--brown-mid);
+  letter-spacing: 0.5px;
+}
+.compass-label.c-n { top: 14px; left: 50%; transform: translateX(-50%); color: var(--brown-dark); }
+.compass-label.c-s { bottom: 14px; left: 50%; transform: translateX(-50%); }
+.compass-label.c-e { right: 14px; top: 50%; transform: translateY(-50%); }
+.compass-label.c-w { left: 14px; top: 50%; transform: translateY(-50%); }
+
+.compass-arrow {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 12px;
+  transform-origin: center center;
+  transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+.compass-arrow .kaaba {
+  font-size: 1.6rem;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  background: #fff;
+  border-radius: 50%;
+  width: 36px; height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--gold);
+}
+.compass-center-dot {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--brown-dark);
+  transform: translate(-50%, -50%);
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.qibla-angle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--brown-dark);
+  margin-top: 8px;
+}
+.qibla-angle .deg {
+  color: var(--brown-mid);
+  font-size: 1.3rem;
+  font-variant-numeric: tabular-nums;
+}
+.qibla-hint {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
+/* ===== نافذة المدينة ===== */
+.dialog-overlay {
+  position: fixed; inset: 0;
+  background: rgba(45, 27, 21, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+.dialog-overlay.active { display: flex; }
+.dialog {
+  background: #FFFFFF;
+  border-radius: 22px;
+  padding: 24px 20px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 20px 60px rgba(62, 39, 35, 0.4);
+}
+.dialog h3 {
+  font-size: 1.15rem;
+  color: var(--brown-dark);
+  margin-bottom: 16px;
+  text-align: center;
+}
+.dialog input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(193, 154, 107, 0.4);
+  background: #FBF6EE;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+.dialog input:focus { outline: none; border-color: var(--brown-mid); }
+.dialog-actions { display: flex; gap: 10px; margin-top: 8px; }
+.dialog-actions button {
+  flex: 1; padding: 12px; border-radius: 12px;
+  border: none; font-family: inherit;
+  font-size: 0.95rem; font-weight: 700;
+  cursor: pointer;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--brown) 0%, var(--brown-mid) 100%);
+  color: #fff;
+}
+.btn-secondary { background: #F0E6D8; color: var(--brown-dark); }
+</style>
+</head>
+<body>
+
+<!-- ================== الرئيسية ================== -->
+<section id="page-home" class="page active">
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <div class="greeting">السلام عليكم ورحمة الله 🌿</div>
+        <div class="user-name">أهلاً بك في نور</div>
+      </div>
+      <div class="app-logo">🕌</div>
+    </div>
+  </div>
+
+  <div class="prayer-card">
+    <div class="prayer-info">
+      <div class="label">الصلاة القادمة</div>
+      <div class="name" id="homePrayerName">—</div>
+      <div class="time" id="homePrayerTime">جاري التحميل...</div>
+    </div>
+    <div class="prayer-countdown">
+      <span class="cd-label">متبقٍ</span>
+      <span class="cd-value" id="homeCountdown">--:--:--</span>
+    </div>
+  </div>
+
+  <div class="section-title">حديث اليوم</div>
+  <div class="verse-card hadith-card">
+    <div class="hadith-text">
+      «إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى»
+    </div>
+    <div class="verse-ref">رواه البخاري ومسلم</div>
+  </div>
+
+  <div class="section-title">تصفح التطبيق</div>
+  <div class="quick-grid">
+    <div class="quick-card" onclick="goTo('quran', 1)">
+      <span class="quick-icon">📖</span>
+      <div class="quick-title">القرآن الكريم</div>
+      <div class="quick-sub">قراءة وتفسير</div>
+    </div>
+    <div class="quick-card" onclick="goTo('prayer', 2)">
+      <span class="quick-icon">🕌</span>
+      <div class="quick-title">مواقيت الصلاة</div>
+      <div class="quick-sub">الأذان والقبلة</div>
+    </div>
+    <div class="quick-card" onclick="goTo('athkar', 3)">
+      <span class="quick-icon">📿</span>
+      <div class="quick-title">الأذكار والأدعية</div>
+      <div class="quick-sub">صباح ومساء</div>
+    </div>
+    <div class="quick-card" onclick="goTo('stories', 3)">
+      <span class="quick-icon">📜</span>
+      <div class="quick-title">قصص الأنبياء</div>
+      <div class="quick-sub">عبر ومواعظ</div>
+    </div>
+    <div class="quick-card" onclick="goTo('books', 4)">
+      <span class="quick-icon">📚</span>
+      <div class="quick-title">الكتب الدينية</div>
+      <div class="quick-sub">قراءة وتحميل</div>
+    </div>
+    <div class="quick-card">
+      <span class="quick-icon">⚙️</span>
+      <div class="quick-title">الإعدادات</div>
+      <div class="quick-sub">تخصيص التطبيق</div>
+    </div>
+  </div>
+  <div class="footer-space"></div>
+</section>
+
+<!-- ================== صفحة الصلاة ================== -->
+<section id="page-prayer" class="page">
+  <div class="sub-header">
+    <div class="sub-header-title">
+      <span class="sub-header-icon">🕌</span>
+      <div>
+        <div class="sub-header-label">مواقيت الصلاة</div>
+        <div class="sub-header-main" id="cityDisplay">جاري التحديد...</div>
+      </div>
+    </div>
+    <button class="icon-btn" onclick="openCityDialog()" title="تغيير المدينة">✏️</button>
+  </div>
+
+  <button class="locate-btn" id="locateBtn" onclick="useMyLocation()">
+    <span class="loc-icon">📍</span>
+    <span>تحديد موقعي تلقائيًا (GPS)</span>
+  </button>
+
+  <div class="date-bar">
+    <span class="hijri" id="hijriDate">—</span>
+    <span class="greg" id="gregDate">—</span>
+  </div>
+
+  <div id="prayerLoading" class="state-box">جاري تحميل المواقيت...</div>
+
+  <div id="prayerContent" style="display:none;">
+    <div class="next-prayer-card">
+      <div class="np-label">الصلاة القادمة</div>
+      <div class="np-name" id="npName">—</div>
+      <div class="np-time" id="npTime">—</div>
+      <div class="np-countdown" id="npCountdown">--:--:--</div>
+    </div>
+
+    <div class="section-title">جميع المواقيت</div>
+    <div class="prayer-list" id="prayerList"></div>
+
+    <div class="section-title">اتجاه القبلة</div>
+    <div class="qibla-card">
+      <div class="compass">
+        <div class="compass-ring">
+          <span class="compass-label c-n">شمال</span>
+          <span class="compass-label c-e">شرق</span>
+          <span class="compass-label c-s">جنوب</span>
+          <span class="compass-label c-w">غرب</span>
+          <div class="compass-arrow" id="qiblaArrow">
+            <span class="kaaba">🕋</span>
+          </div>
+          <div class="compass-center-dot"></div>
+        </div>
+      </div>
+      <div class="qibla-angle" id="qiblaAngle">
+        الزاوية: <span class="deg">—</span>
+      </div>
+      <div class="qibla-hint">
+        وجّه هاتفك بحيث يكون أعلاه نحو الشمال، ثم اتبع اتجاه 🕋
+      </div>
+    </div>
+  </div>
+
+  <div id="prayerError" class="state-box" style="display:none;"></div>
+  <div class="footer-space"></div>
+</section>
+
+<!-- ================== صفحات قيد الإنشاء ================== -->
+<section id="page-quran" class="page">
+  <div class="sub-header">
+    <div class="sub-header-title">
+      <span class="sub-header-icon">📖</span>
+      <div>
+        <div class="sub-header-label">قريبًا</div>
+        <div class="sub-header-main">القرآن الكريم</div>
+      </div>
+    </div>
+  </div>
+  <div class="state-box">سنبني هذه الصفحة في الخطوة القادمة بإذن الله.</div>
+</section>
+
+<section id="page-athkar" class="page">
+  <div class="sub-header">
+    <div class="sub-header-title">
+      <span class="sub-header-icon">📿</span>
+      <div>
+        <div class="sub-header-label">قريبًا</div>
+        <div class="sub-header-main">الأذكار والأدعية</div>
+      </div>
+    </div>
+  </div>
+  <div class="state-box">سنبني هذه الصفحة قريبًا.</div>
+</section>
+
+<section id="page-stories" class="page">
+  <div class="sub-header">
+    <div class="sub-header-title">
+      <span class="sub-header-icon">📜</span>
+      <div>
+        <div class="sub-header-label">قريبًا</div>
+        <div class="sub-header-main">قصص الأنبياء</div>
+      </div>
+    </div>
+  </div>
+  <div class="state-box">سنبني هذه الصفحة قريبًا.</div>
+</section>
+
+<section id="page-books" class="page">
+  <div class="sub-header">
+    <div class="sub-header-title">
+      <span class="sub-header-icon">📚</span>
+      <div>
+        <div class="sub-header-label">قريبًا</div>
+        <div class="sub-header-main">الكتب الدينية</div>
+      </div>
+    </div>
+  </div>
+  <div class="state-box">سنبني هذه الصفحة قريبًا.</div>
+</section>
+
+<!-- ================== نافذة المدينة ================== -->
+<div class="dialog-overlay" id="cityDialog">
+  <div class="dialog">
+    <h3>📍 حدد مدينتك يدويًا</h3>
+    <input id="inputCity" placeholder="المدينة (مثال: Algiers)" value="Algiers">
+    <input id="inputCountry" placeholder="الدولة (مثال: Algeria)" value="Algeria">
+    <div class="dialog-actions">
+      <button class="btn-secondary" onclick="closeCityDialog()">إلغاء</button>
+      <button class="btn-primary" onclick="saveCity()">حفظ وعرض</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================== شريط التنقل ================== -->
+<nav class="nav">
+  <button class="nav-item active" onclick="goTo('home', this)">
+    <span class="icon">🏠</span><span>الرئيسية</span>
+  </button>
+  <button class="nav-item" onclick="goTo('quran', this)">
+    <span class="icon">📖</span><span>القرآن</span>
+  </button>
+  <button class="nav-item" onclick="goTo('prayer', this)">
+    <span class="icon">🕌</span><span>الصلاة</span>
+  </button>
+  <button class="nav-item" onclick="goTo('athkar', this)">
+    <span class="icon">📿</span><span>الأذكار</span>
+  </button>
+  <button class="nav-item" onclick="goTo('books', this)">
+    <span class="icon">📚</span><span>الكتب</span>
+  </button>
+</nav>
+
+<script>
+/* ============================================================
+   1) التنقل بين الصفحات
+   ============================================================ */
+function goTo(pageId, navBtn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + pageId).classList.add('active');
+
+  const buttons = document.querySelectorAll('.nav-item');
+  buttons.forEach(b => b.classList.remove('active'));
+  if (typeof navBtn === 'number') buttons[navBtn]?.classList.add('active');
+  else if (navBtn) navBtn.classList.add('active');
+
+  window.scrollTo(0, 0);
+  if (pageId === 'prayer') ensurePrayerLoaded();
+}
+
+/* ============================================================
+   2) التخزين المحلي
+   ============================================================ */
+const KEY_CITY = 'nur_city_v1';
+const KEY_COORDS = 'nur_coords_v1';
+
+function getSavedCity() {
+  try {
+    const raw = localStorage.getItem(KEY_CITY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return { city: 'Algiers', country: 'Algeria' };
+}
+function saveCityData(city, country) {
+  localStorage.setItem(KEY_CITY, JSON.stringify({ city, country }));
+}
+function getSavedCoords() {
+  try {
+    const raw = localStorage.getItem(KEY_COORDS);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return null;
+}
+function saveCoords(lat, lon) {
+  localStorage.setItem(KEY_COORDS, JSON.stringify({ lat, lon }));
+}
+
+/* ============================================================
+   3) نافذة تغيير المدينة
+   ============================================================ */
+function openCityDialog() {
+  const { city, country } = getSavedCity();
+  document.getElementById('inputCity').value = city;
+  document.getElementById('inputCountry').value = country;
+  document.getElementById('cityDialog').classList.add('active');
+}
+function closeCityDialog() {
+  document.getElementById('cityDialog').classList.remove('active');
+}
+function saveCity() {
+  const city = document.getElementById('inputCity').value.trim();
+  const country = document.getElementById('inputCountry').value.trim();
+  if (!city || !country) return;
+  saveCityData(city, country);
+  localStorage.removeItem(KEY_COORDS); // نلغي الإحداثيات المحفوظة
+  closeCityDialog();
+  loadPrayerByCity(city, country);
+}
+
+/* ============================================================
+   4) حالة العرض
+   ============================================================ */
+function showPrayerState(state, msg) {
+  document.getElementById('prayerLoading').style.display = state === 'loading' ? 'block' : 'none';
+  document.getElementById('prayerContent').style.display = state === 'content' ? 'block' : 'none';
+  const errBox = document.getElementById('prayerError');
+  if (state === 'error') {
+    errBox.textContent = '⚠️ ' + msg;
+    errBox.style.display = 'block';
+  } else {
+    errBox.style.display = 'none';
+  }
+}
+
+/* ============================================================
+   5) جلب المواقيت
+   ============================================================ */
+let prayerData = null;
+let countdownTimer = null;
+
+// حسب المدينة
+async function loadPrayerByCity(city, country) {
+  showPrayerState('loading');
+  try {
+    const url = `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=3`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('فشل الاتصال بالخادم');
+    const data = await res.json();
+    if (data.code !== 200) throw new Error('لم يتم العثور على المدينة');
+
+    prayerData = data.data;
+    document.getElementById('cityDisplay').textContent = `${city} · ${country}`;
+    renderDates(prayerData.date);
+    renderPrayerList(prayerData.timings);
+    renderNextPrayer();
+    startCountdown();
+    showPrayerState('content');
+  } catch (err) {
+    showPrayerState('error', err.message);
+  }
+}
+
+// حسب الإحداثيات
+async function loadPrayerByCoords(lat, lon) {
+  showPrayerState('loading');
+  try {
+    const url = `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=3`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('فشل الاتصال بالخادم');
+    const data = await res.json();
+    if (data.code !== 200) throw new Error('فشل تحميل المواقيت');
+
+    prayerData = data.data;
+
+    // محاولة الحصول على اسم المدينة
+    let cityLabel = `${lat.toFixed(2)}, ${lon.toFixed(2)}`;
+    try {
+      const geoRes = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=ar`);
+      const geoData = await geoRes.json();
+      const name = geoData.city || geoData.locality || geoData.principalSubdivision;
+      const country = geoData.countryName;
+      if (name) cityLabel = country ? `${name} · ${country}` : name;
+    } catch (e) { /* تجاهل الخطأ */ }
+
+    document.getElementById('cityDisplay').textContent = cityLabel;
+    renderDates(prayerData.date);
+    renderPrayerList(prayerData.timings);
+    renderNextPrayer();
+    startCountdown();
+    calculateQibla(lat, lon);
+    showPrayerState('content');
+  } catch (err) {
+    showPrayerState('error', err.message);
+  }
+}
+
+function ensurePrayerLoaded() {
+  if (prayerData) {
+    // إذا كان هناك إحداثيات محفوظة، احسب القبلة
+    const c = getSavedCoords();
+    if (c) calculateQibla(c.lat, c.lon);
+    return;
+  }
+  const coords = getSavedCoords();
+  if (coords) {
+    loadPrayerByCoords(coords.lat, coords.lon);
+  } else {
+    const { city, country } = getSavedCity();
+    loadPrayerByCity(city, country);
+  }
+}
+
+/* ============================================================
+   6) تحديد الموقع تلقائيًا
+   ============================================================ */
+function useMyLocation() {
+  const btn = document.getElementById('locateBtn');
+  if (!navigator.geolocation) {
+    showPrayerState('error', 'متصفحك لا يدعم تحديد الموقع. جرّب تغيير المدينة يدويًا.');
+    return;
+  }
+  btn.disabled = true;
+  btn.querySelector('span:last-child').textContent = 'جاري تحديد موقعك...';
+  showPrayerState('loading');
+
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      const { latitude, longitude } = pos.coords;
+      saveCoords(latitude, longitude);
+      await loadPrayerByCoords(latitude, longitude);
+      btn.disabled = false;
+      btn.querySelector('span:last-child').textContent = 'تحديث موقعي (GPS)';
+    },
+    (err) => {
+      btn.disabled = false;
+      btn.querySelector('span:last-child').textContent = 'تحديد موقعي تلقائيًا (GPS)';
+      let msg = 'تعذر تحديد موقعك.';
+      if (err.code === 1) msg = 'تم رفض إذن الموقع. يرجى السماح بالوصول للموقع من إعدادات المتصفح.';
+      else if (err.code === 2) msg = 'الموقع غير متاح حاليًا.';
+      else if (err.code === 3) msg = 'انتهت مدة الانتظار.';
+      showPrayerState('error', msg);
+    },
+    { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+  );
+}
+
+/* ============================================================
+   7) القبلة
+   ============================================================ */
+function calculateQibla(lat, lon) {
+  const kaabaLat = 21.4225 * Math.PI / 180;
+  const kaabaLon = 39.8262 * Math.PI / 180;
+  const userLat = lat * Math.PI / 180;
+  const userLon = lon * Math.PI / 180;
+  const dLon = kaabaLon - userLon;
+
+  const y = Math.sin(dLon);
+  const x = Math.cos(userLat) * Math.tan(kaabaLat) - Math.sin(userLat) * Math.cos(dLon);
+
+  let qibla = Math.atan2(y, x) * 180 / Math.PI;
+  if (qibla < 0) qibla += 360;
+
+  document.getElementById('qiblaAngle').innerHTML =
+    `الزاوية: <span class="deg">${qibla.toFixed(1)}°</span> من الشمال`;
+
+  const arrow = document.getElementById('qiblaArrow');
+  arrow.style.transform = `rotate(${qibla}deg)`;
+}
+
+/* ============================================================
+   8) التاريخ
+   ============================================================ */
+function renderDates(dateInfo) {
+  const h = dateInfo.hijri, g = dateInfo.gregorian;
+  const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  document.getElementById('hijriDate').textContent = `${h.day} ${h.month.ar} ${h.year} هـ`;
+  document.getElementById('gregDate').textContent = `${g.day} ${months[parseInt(g.month.number)-1]} ${g.year}`;
+}
+
+/* ============================================================
+   9) قائمة الصلوات
+   ============================================================ */
+const PRAYERS = [
+  { key: 'Fajr',    name: 'الفجر',   icon: '🌄' },
+  { key: 'Sunrise', name: 'الشروق',  icon: '☀️' },
+  { key: 'Dhuhr',   name: 'الظهر',   icon: '🌞' },
+  { key: 'Asr',     name: 'العصر',   icon: '🌤️' },
+  { key: 'Maghrib', name: 'المغرب',  icon: '🌅' },
+  { key: 'Isha',    name: 'العشاء',  icon: '🌙' }
+];
+
+function renderPrayerList(timings) {
+  const list = document.getElementById('prayerList');
+  list.innerHTML = PRAYERS.map(p => `
+    <div class="prayer-row" data-key="${p.key}">
+      <div class="p-name">
+        <span class="p-icon">${p.icon}</span>
+        <span>${p.name}</span>
+      </div>
+      <div class="p-time">${cleanTime(timings[p.key])}</div>
+    </div>
+  `).join('');
+}
+function cleanTime(t) { return (t || '').split(' ')[0]; }
+
+/* ============================================================
+   10) العد التنازلي
+   ============================================================ */
+function buildPrayerDates() {
+  const timings = prayerData.timings;
+  const now = new Date();
+  return PRAYERS.map(p => {
+    const [h, m] = cleanTime(timings[p.key]).split(':').map(Number);
+    const d = new Date(now);
+    d.setHours(h, m, 0, 0);
+    return { ...p, date: d, timeStr: cleanTime(timings[p.key]) };
+  });
+}
+function findNextAndCurrent(dates) {
+  const now = new Date();
+  let next = dates.find(p => p.date > now);
+  if (!next) {
+    const fajr = dates[0];
+    const d = new Date(fajr.date);
+    d.setDate(d.getDate() + 1);
+    next = { ...fajr, date: d };
+  }
+  const past = dates.filter(p => p.date <= now);
+  const current = past.length ? past[past.length - 1] : null;
+  return { next, current };
+}
+function renderNextPrayer() {
+  if (!prayerData) return;
+  const dates = buildPrayerDates();
+  const { next, current } = findNextAndCurrent(dates);
+
+  document.getElementById('homePrayerName').textContent = next.name;
+  document.getElementById('homePrayerTime').textContent = next.timeStr;
+  document.getElementById('npName').textContent = next.name;
+  document.getElementById('npTime').textContent = next.timeStr;
+
+  document.querySelectorAll('.prayer-row').forEach(r => r.classList.remove('current'));
+  if (current) {
+    const row = document.querySelector(`.prayer-row[data-key="${current.key}"]`);
+    if (row) row.classList.add('current');
+  }
+}
+function startCountdown() {
+  if (countdownTimer) clearInterval(countdownTimer);
+  updateCountdown();
+  countdownTimer = setInterval(updateCountdown, 1000);
+}
+function updateCountdown() {
+  if (!prayerData) return;
+  const dates = buildPrayerDates();
+  const { next } = findNextAndCurrent(dates);
+  const diff = next.date - new Date();
+  const total = Math.max(0, Math.floor(diff / 1000));
+  const h = String(Math.floor(total / 3600)).padStart(2, '0');
+  const m = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
+  const s = String(total % 60).padStart(2, '0');
+  const text = `${h}:${m}:${s}`;
+
+  document.getElementById('npCountdown').textContent = text;
+  document.getElementById('homeCountdown').textContent = text;
+
+  if (total <= 0) renderNextPrayer();
+}
+
+/* ============================================================
+   11) التحميل الأول
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  const coords = getSavedCoords();
+  if (coords) {
+    loadPrayerByCoords(coords.lat, coords.lon);
+  } else {
+    const { city, country } = getSavedCity();
+    loadPrayerByCity(city, country);
+  }
+});
+</script>
+
+</body>
+</html>
