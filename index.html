@@ -31,7 +31,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ===== الهيدر الرئيسي ===== */
+/* ===== الهيدر ===== */
 .header {
   background: linear-gradient(135deg, var(--brown-dark) 0%, var(--brown) 50%, var(--brown-mid) 100%);
   color: #fff;
@@ -59,7 +59,7 @@ body {
 .user-name { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.3px; }
 .app-logo { font-size: 2.2rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
 
-/* ===== الهيدر الداخلي ===== */
+/* ===== هيدر داخلي ===== */
 .sub-header {
   background: linear-gradient(135deg, var(--brown-dark) 0%, var(--brown) 50%, var(--brown-mid) 100%);
   color: #fff;
@@ -345,10 +345,12 @@ body {
   justify-content: center;
   gap: 8px;
 }
+
+/* ===== البوصلة الحيّة ===== */
 .compass {
   position: relative;
-  width: 220px;
-  height: 220px;
+  width: 240px;
+  height: 240px;
   margin: 0 auto 16px;
 }
 .compass-ring {
@@ -360,26 +362,28 @@ body {
   box-shadow:
     inset 0 0 20px rgba(111, 78, 55, 0.1),
     0 6px 20px rgba(111, 78, 55, 0.15);
+  transition: transform 0.15s linear;
+  will-change: transform;
 }
 .compass-tick {
   position: absolute;
   left: 50%; top: 6px;
   width: 2px; height: 10px;
   background: rgba(139, 115, 85, 0.35);
-  transform-origin: 0 104px;
+  transform-origin: 0 114px;
   transform: translateX(-50%);
 }
 .compass-label {
   position: absolute;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--brown-mid);
   letter-spacing: 0.5px;
 }
-.compass-label.c-n { top: 14px; left: 50%; transform: translateX(-50%); color: var(--brown-dark); }
-.compass-label.c-s { bottom: 14px; left: 50%; transform: translateX(-50%); }
-.compass-label.c-e { right: 14px; top: 50%; transform: translateY(-50%); }
-.compass-label.c-w { left: 14px; top: 50%; transform: translateY(-50%); }
+.compass-label.c-n { top: 16px; left: 50%; transform: translateX(-50%); color: #B91C1C; font-size: 1rem; }
+.compass-label.c-s { bottom: 16px; left: 50%; transform: translateX(-50%); }
+.compass-label.c-e { right: 16px; top: 50%; transform: translateY(-50%); }
+.compass-label.c-w { left: 16px; top: 50%; transform: translateY(-50%); }
 
 .compass-arrow {
   position: absolute;
@@ -387,49 +391,91 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding-top: 12px;
+  padding-top: 14px;
   transform-origin: center center;
-  transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.15s linear;
+  will-change: transform;
   pointer-events: none;
+  z-index: 3;
 }
 .compass-arrow .kaaba {
-  font-size: 1.6rem;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  font-size: 1.7rem;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
   background: #fff;
   border-radius: 50%;
-  width: 36px; height: 36px;
+  width: 42px; height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 2px solid var(--gold);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
 }
 .compass-center-dot {
   position: absolute;
   top: 50%; left: 50%;
-  width: 12px; height: 12px;
+  width: 14px; height: 14px;
   border-radius: 50%;
   background: var(--brown-dark);
   transform: translate(-50%, -50%);
   border: 2px solid #fff;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 4;
 }
 .qibla-angle {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--brown-dark);
   margin-top: 8px;
 }
 .qibla-angle .deg {
   color: var(--brown-mid);
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-variant-numeric: tabular-nums;
 }
 .qibla-hint {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: var(--muted);
-  margin-top: 8px;
-  line-height: 1.6;
+  margin-top: 10px;
+  line-height: 1.7;
 }
+.compass-status {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-top: 8px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-block;
+}
+.compass-status.on {
+  background: rgba(34, 197, 94, 0.15);
+  color: #15803D;
+}
+.compass-status.off {
+  background: rgba(139, 115, 85, 0.15);
+  color: var(--muted);
+}
+
+.compass-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 16px;
+  padding: 13px;
+  background: linear-gradient(135deg, var(--brown) 0%, var(--brown-mid) 100%);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 5px 14px rgba(111, 78, 55, 0.25);
+  transition: transform 0.15s;
+}
+.compass-btn:active { transform: scale(0.98); }
+.compass-btn:disabled { opacity: 0.6; cursor: wait; }
 
 /* ===== نافذة المدينة ===== */
 .dialog-overlay {
@@ -592,22 +638,27 @@ body {
     <div class="section-title">اتجاه القبلة</div>
     <div class="qibla-card">
       <div class="compass">
-        <div class="compass-ring">
-          <span class="compass-label c-n">شمال</span>
-          <span class="compass-label c-e">شرق</span>
-          <span class="compass-label c-s">جنوب</span>
-          <span class="compass-label c-w">غرب</span>
-          <div class="compass-arrow" id="qiblaArrow">
-            <span class="kaaba">🕋</span>
-          </div>
-          <div class="compass-center-dot"></div>
+        <div class="compass-ring" id="compassDial">
+          <span class="compass-label c-n">ش</span>
+          <span class="compass-label c-e">ق</span>
+          <span class="compass-label c-s">ج</span>
+          <span class="compass-label c-w">غ</span>
         </div>
+        <div class="compass-arrow" id="qiblaArrow">
+          <span class="kaaba">🕋</span>
+        </div>
+        <div class="compass-center-dot"></div>
       </div>
       <div class="qibla-angle" id="qiblaAngle">
-        الزاوية: <span class="deg">—</span>
+        الزاوية من الشمال: <span class="deg">—</span>
       </div>
+      <div class="compass-status off" id="compassStatus">البوصلة غير مفعّلة</div>
+      <button class="compass-btn" id="compassBtn" onclick="toggleCompass()">
+        <span>🧭</span>
+        <span>تفعيل البوصلة الحيّة</span>
+      </button>
       <div class="qibla-hint">
-        وجّه هاتفك بحيث يكون أعلاه نحو الشمال، ثم اتبع اتجاه 🕋
+        عند تفعيل البوصلة، أدر هاتفك حتى يظهر 🕋 في الأعلى تمامًا.
       </div>
     </div>
   </div>
@@ -746,7 +797,7 @@ function saveCoords(lat, lon) {
 }
 
 /* ============================================================
-   3) نافذة تغيير المدينة
+   3) نافذة المدينة
    ============================================================ */
 function openCityDialog() {
   const { city, country } = getSavedCity();
@@ -762,8 +813,10 @@ function saveCity() {
   const country = document.getElementById('inputCountry').value.trim();
   if (!city || !country) return;
   saveCityData(city, country);
-  localStorage.removeItem(KEY_COORDS); // نلغي الإحداثيات المحفوظة
+  localStorage.removeItem(KEY_COORDS);
   closeCityDialog();
+  // إيقاف البوصلة لأن الموقع تغير
+  stopCompass();
   loadPrayerByCity(city, country);
 }
 
@@ -788,7 +841,6 @@ function showPrayerState(state, msg) {
 let prayerData = null;
 let countdownTimer = null;
 
-// حسب المدينة
 async function loadPrayerByCity(city, country) {
   showPrayerState('loading');
   try {
@@ -810,7 +862,6 @@ async function loadPrayerByCity(city, country) {
   }
 }
 
-// حسب الإحداثيات
 async function loadPrayerByCoords(lat, lon) {
   showPrayerState('loading');
   try {
@@ -822,7 +873,6 @@ async function loadPrayerByCoords(lat, lon) {
 
     prayerData = data.data;
 
-    // محاولة الحصول على اسم المدينة
     let cityLabel = `${lat.toFixed(2)}, ${lon.toFixed(2)}`;
     try {
       const geoRes = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=ar`);
@@ -830,7 +880,7 @@ async function loadPrayerByCoords(lat, lon) {
       const name = geoData.city || geoData.locality || geoData.principalSubdivision;
       const country = geoData.countryName;
       if (name) cityLabel = country ? `${name} · ${country}` : name;
-    } catch (e) { /* تجاهل الخطأ */ }
+    } catch (e) { /* تجاهل */ }
 
     document.getElementById('cityDisplay').textContent = cityLabel;
     renderDates(prayerData.date);
@@ -846,15 +896,13 @@ async function loadPrayerByCoords(lat, lon) {
 
 function ensurePrayerLoaded() {
   if (prayerData) {
-    // إذا كان هناك إحداثيات محفوظة، احسب القبلة
     const c = getSavedCoords();
     if (c) calculateQibla(c.lat, c.lon);
     return;
   }
   const coords = getSavedCoords();
-  if (coords) {
-    loadPrayerByCoords(coords.lat, coords.lon);
-  } else {
+  if (coords) loadPrayerByCoords(coords.lat, coords.lon);
+  else {
     const { city, country } = getSavedCity();
     loadPrayerByCity(city, country);
   }
@@ -895,8 +943,10 @@ function useMyLocation() {
 }
 
 /* ============================================================
-   7) القبلة
+   7) حساب زاوية القبلة
    ============================================================ */
+let qiblaBearing = 0;
+
 function calculateQibla(lat, lon) {
   const kaabaLat = 21.4225 * Math.PI / 180;
   const kaabaLon = 39.8262 * Math.PI / 180;
@@ -909,16 +959,138 @@ function calculateQibla(lat, lon) {
 
   let qibla = Math.atan2(y, x) * 180 / Math.PI;
   if (qibla < 0) qibla += 360;
+  qiblaBearing = qibla;
 
   document.getElementById('qiblaAngle').innerHTML =
-    `الزاوية: <span class="deg">${qibla.toFixed(1)}°</span> من الشمال`;
+    `الزاوية من الشمال: <span class="deg">${qibla.toFixed(1)}°</span>`;
 
-  const arrow = document.getElementById('qiblaArrow');
-  arrow.style.transform = `rotate(${qibla}deg)`;
+  // عرض مبدئي بدون دوران (بافتراض أن الهاتف يشير للشمال)
+  updateCompassUI(0);
 }
 
 /* ============================================================
-   8) التاريخ
+   8) البوصلة الحيّة
+   ============================================================ */
+let compassActive = false;
+let compassHandler = null;
+let currentHeading = 0;
+let compassSmoothing = 0.15;
+
+// كشف نوع الجهاز
+function isIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
+async function toggleCompass() {
+  const btn = document.getElementById('compassBtn');
+  if (compassActive) {
+    stopCompass();
+    btn.querySelector('span:last-child').textContent = 'تفعيل البوصلة الحيّة';
+    return;
+  }
+
+  // على iOS نحتاج طلب إذن صريح
+  if (isIOS() && typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission === 'function') {
+    try {
+      const perm = await DeviceOrientationEvent.requestPermission();
+      if (perm !== 'granted') {
+        alert('تم رفض إذن البوصلة. يمكنك تفعيله من إعدادات Safari.');
+        return;
+      }
+    } catch (e) {
+      alert('تعذر طلب إذن البوصلة: ' + e.message);
+      return;
+    }
+  }
+
+  // التحقق من دعم الجهاز
+  if (!('DeviceOrientationEvent' in window)) {
+    alert('جهازك أو متصفحك لا يدعم البوصلة.');
+    return;
+  }
+
+  startCompass();
+  btn.querySelector('span:last-child').textContent = 'إيقاف البوصلة';
+}
+
+function startCompass() {
+  compassActive = true;
+  updateCompassStatus(true);
+  document.getElementById('compassBtn').querySelector('span:last-child').textContent = 'إيقاف البوصلة';
+
+  compassHandler = (e) => handleOrientation(e);
+
+  // Android: deviceorientationabsolute أدق
+  if ('ondeviceorientationabsolute' in window) {
+    window.addEventListener('deviceorientationabsolute', compassHandler, true);
+  }
+  // iOS وFallback
+  window.addEventListener('deviceorientation', compassHandler, true);
+}
+
+function stopCompass() {
+  compassActive = false;
+  if (compassHandler) {
+    window.removeEventListener('deviceorientationabsolute', compassHandler, true);
+    window.removeEventListener('deviceorientation', compassHandler, true);
+    compassHandler = null;
+  }
+  updateCompassStatus(false);
+  // إعادة تعيين البوصلة
+  updateCompassUI(0);
+}
+
+function updateCompassStatus(active) {
+  const status = document.getElementById('compassStatus');
+  if (active) {
+    status.textContent = '🧭 البوصلة تعمل الآن';
+    status.className = 'compass-status on';
+  } else {
+    status.textContent = 'البوصلة غير مفعّلة';
+    status.className = 'compass-status off';
+  }
+}
+
+function handleOrientation(e) {
+  let heading = null;
+
+  // iOS: webkitCompassHeading
+  if (typeof e.webkitCompassHeading === 'number' && e.webkitCompassHeading >= 0) {
+    heading = e.webkitCompassHeading;
+  }
+  // Android: alpha
+  else if (typeof e.alpha === 'number' && e.alpha !== null) {
+    heading = (360 - e.alpha) % 360;
+  }
+
+  if (heading === null || isNaN(heading)) return;
+
+  // تنعيم القراءة (تجنب الاهتزاز)
+  let delta = heading - currentHeading;
+  // تعامل مع الانتقال 359 → 0
+  if (delta > 180) delta -= 360;
+  if (delta < -180) delta += 360;
+  currentHeading = (currentHeading + delta * compassSmoothing + 360) % 360;
+
+  updateCompassUI(currentHeading);
+}
+
+function updateCompassUI(heading) {
+  const dial = document.getElementById('compassDial');
+  const arrow = document.getElementById('qiblaArrow');
+  if (!dial || !arrow) return;
+
+  // القرص يدور عكس اتجاه الهاتف ليظهر الشمال الحقيقي
+  dial.style.transform = `rotate(${-heading}deg)`;
+
+  // سهم القبلة يشير إلى القبلة الحقيقية على الشاشة
+  const arrowAngle = qiblaBearing - heading;
+  arrow.style.transform = `rotate(${arrowAngle}deg)`;
+}
+
+/* ============================================================
+   9) التاريخ
    ============================================================ */
 function renderDates(dateInfo) {
   const h = dateInfo.hijri, g = dateInfo.gregorian;
@@ -928,7 +1100,7 @@ function renderDates(dateInfo) {
 }
 
 /* ============================================================
-   9) قائمة الصلوات
+   10) قائمة الصلوات
    ============================================================ */
 const PRAYERS = [
   { key: 'Fajr',    name: 'الفجر',   icon: '🌄' },
@@ -954,7 +1126,7 @@ function renderPrayerList(timings) {
 function cleanTime(t) { return (t || '').split(' ')[0]; }
 
 /* ============================================================
-   10) العد التنازلي
+   11) العد التنازلي
    ============================================================ */
 function buildPrayerDates() {
   const timings = prayerData.timings;
@@ -1018,7 +1190,7 @@ function updateCountdown() {
 }
 
 /* ============================================================
-   11) التحميل الأول
+   12) التحميل الأول
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   const coords = getSavedCoords();
