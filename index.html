@@ -441,6 +441,19 @@ body {
   color: #fff;
 }
 .btn-secondary { background: #F0E6D8; color: var(--brown-dark); }
+  .calibrate-btn {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; width: 100%;
+  margin-top: 10px; padding: 11px;
+  background: linear-gradient(135deg, #C9A227 0%, #B8912A 100%);
+  color: #3E2723; border: none; border-radius: 12px;
+  font-family: inherit; font-size: 0.9rem; font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(201, 162, 39, 0.3);
+  transition: transform 0.15s;
+}
+.calibrate-btn:active { transform: scale(0.98); }
+  
 </style>
 </head>
 <body>
@@ -569,6 +582,10 @@ body {
 
       <div class="compass-status off" id="compassStatus">Compass is off</div>
       <div class="compass-debug" id="compassDebug"></div>
+      <button class="calibrate-btn" id="calibrateBtn" onclick="calibrateNorth()" style="display:none;">
+  <span>🎯</span>
+  <span>معايرة: أشير نحو الشمال الآن</span>
+      </button>
 
       <button class="compass-btn" id="compassBtn" onclick="toggleCompass()">
         <span>🧭</span>
