@@ -13,15 +13,11 @@
   --brown: #6F4E37;
   --brown-mid: #8B5A2B;
   --brown-light: #C19A6B;
-  --beige: #F5EFE6;
-  --beige-dark: #EADBC8;
   --gold: #C9A227;
   --text: #2D1B15;
   --muted: #8B7355;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
   font-family: 'Cairo', system-ui, sans-serif;
   background: linear-gradient(180deg, #FAF6F0 0%, #F0E6D8 100%);
@@ -34,11 +30,9 @@ body {
 /* ===== الهيدر ===== */
 .header {
   background: linear-gradient(135deg, var(--brown-dark) 0%, var(--brown) 50%, var(--brown-mid) 100%);
-  color: #fff;
-  padding: 24px 20px 28px;
+  color: #fff; padding: 24px 20px 28px;
   border-radius: 0 0 28px 28px;
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
   box-shadow: 0 8px 24px rgba(62, 39, 35, 0.25);
 }
 .header::before {
@@ -59,18 +53,13 @@ body {
 .user-name { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.3px; }
 .app-logo { font-size: 2.2rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
 
-/* ===== هيدر داخلي ===== */
 .sub-header {
   background: linear-gradient(135deg, var(--brown-dark) 0%, var(--brown) 50%, var(--brown-mid) 100%);
-  color: #fff;
-  padding: 20px;
+  color: #fff; padding: 20px;
   border-radius: 0 0 24px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
   box-shadow: 0 6px 18px rgba(62, 39, 35, 0.22);
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
 .sub-header::before {
   content: ""; position: absolute; top: -30px; right: -30px;
@@ -90,11 +79,9 @@ body {
   display: flex; align-items: center; justify-content: center;
 }
 
-/* ===== الصفحات ===== */
 .page { display: none; padding-bottom: 20px; }
 .page.active { display: block; }
 
-/* ===== بطاقة الصلاة ===== */
 .prayer-card {
   background: linear-gradient(135deg, #FFFFFF 0%, #FBF6EE 100%);
   border-radius: 20px; padding: 20px;
@@ -114,7 +101,6 @@ body {
 .prayer-countdown .cd-label { font-size: 0.7rem; opacity: 0.85; display: block; margin-bottom: 4px; }
 .prayer-countdown .cd-value { font-size: 0.95rem; font-weight: 700; font-variant-numeric: tabular-nums; }
 
-/* ===== عناوين الأقسام ===== */
 .section-title {
   display: flex; align-items: center; gap: 8px;
   margin: 24px 20px 12px;
@@ -126,7 +112,6 @@ body {
   border-radius: 4px;
 }
 
-/* ===== بطاقة الحديث ===== */
 .verse-card {
   background: linear-gradient(135deg, #FFFFFF 0%, #FBF6EE 100%);
   border-radius: 20px; padding: 22px 20px; margin: 0 16px;
@@ -148,7 +133,6 @@ body {
 }
 .verse-ref { text-align: center; font-size: 0.85rem; color: var(--muted); font-weight: 600; }
 
-/* ===== الاختصارات ===== */
 .quick-grid {
   display: grid; grid-template-columns: repeat(2, 1fr);
   gap: 12px; margin: 0 16px;
@@ -167,7 +151,6 @@ body {
 .quick-title { font-size: 0.95rem; font-weight: 700; color: var(--brown-dark); }
 .quick-sub { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
 
-/* ===== شريط التنقل ===== */
 .nav {
   position: fixed; bottom: 0; right: 0; left: 0;
   background: linear-gradient(180deg, #FFFFFF 0%, #FBF6EE 100%);
@@ -196,7 +179,6 @@ body {
 }
 .footer-space { height: 20px; }
 
-/* ===== صفحة الصلاة ===== */
 .date-bar {
   margin: 16px 16px 0;
   background: linear-gradient(135deg, #FFFFFF 0%, #FBF6EE 100%);
@@ -282,7 +264,6 @@ body {
   color: var(--muted); font-size: 0.9rem;
 }
 
-/* ===== بطاقة القبلة ===== */
 .qibla-card {
   margin: 16px;
   background: linear-gradient(135deg, #FFFFFF 0%, #FBF6EE 100%);
@@ -292,38 +273,42 @@ body {
   text-align: center;
 }
 
-/* ===== البوصلة ===== */
 .compass-wrap {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 16px;
+  display: flex; justify-content: center; margin-bottom: 16px;
 }
-
 .compass {
   position: relative;
-  width: 300px;
-  height: 300px;
-  max-width: 90vw;
-  max-height: 90vw;
+  width: 290px; height: 290px;
+  max-width: 88vw; max-height: 88vw;
 }
 
-/* الوجه الدوّار (يحمل العلامات والجهات) */
+/* مؤشر الرؤية الثابت أعلى البوصلة */
+.view-marker {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 14px solid var(--brown-dark);
+  z-index: 12;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+}
+
 .compass-face {
   position: absolute;
   inset: 0;
   will-change: transform;
+  transition: transform 0.08s linear;
 }
-.compass-face svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
+.compass-face svg { display: block; width: 100%; height: 100%; }
 
-/* الإبرة الدوّارة (تحمل 🕋) */
 .compass-needle {
   position: absolute;
   inset: 0;
   will-change: transform;
+  transition: transform 0.08s linear;
   pointer-events: none;
   z-index: 5;
 }
@@ -333,26 +318,25 @@ body {
   bottom: 50%;
   left: 50%;
   transform: translateX(-50%);
-  width: 14px;
-  height: 110px;
+  width: 12px;
+  height: 105px;
   background: linear-gradient(to top,
     rgba(62, 39, 35, 0) 0%,
-    rgba(62, 39, 35, 0.15) 15%,
-    #6F4E37 50%,
-    #8B5A2B 75%,
+    rgba(111, 78, 55, 0.2) 15%,
+    #6F4E37 55%,
     #C9A227 100%);
   clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-  filter: drop-shadow(0 0 6px rgba(201, 162, 39, 0.4));
+  filter: drop-shadow(0 0 5px rgba(201, 162, 39, 0.4));
 }
 
 .needle-kaaba {
   position: absolute;
   left: 50%;
-  top: calc(50% - 118px);
+  top: calc(50% - 112px);
   transform: translate(-50%, -50%);
-  font-size: 1.5rem;
-  width: 42px;
-  height: 42px;
+  font-size: 1.4rem;
+  width: 40px;
+  height: 40px;
   background: #FFFFFF;
   border-radius: 50%;
   display: flex;
@@ -360,17 +344,15 @@ body {
   justify-content: center;
   border: 3px solid var(--gold);
   box-shadow:
-    0 3px 10px rgba(0, 0, 0, 0.25),
+    0 3px 10px rgba(0, 0, 0, 0.22),
     0 0 0 4px rgba(201, 162, 39, 0.15);
 }
 
 .compass-hub {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 22px;
-  height: 22px;
+  width: 20px; height: 20px;
   background: radial-gradient(circle at 30% 30%, #6F4E37, #3E2723);
   border: 3px solid var(--gold);
   border-radius: 50%;
@@ -378,41 +360,30 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* ===== معلومات أسفل البوصلة ===== */
 .qibla-info {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--brown-dark);
-  margin-top: 8px;
+  font-size: 0.95rem; font-weight: 700;
+  color: var(--brown-dark); margin-top: 8px;
 }
 .qibla-info .deg {
-  color: var(--brown-mid);
-  font-size: 1.35rem;
+  color: var(--brown-mid); font-size: 1.35rem;
   font-variant-numeric: tabular-nums;
-  display: inline-block;
-  padding: 4px 12px;
+  display: inline-block; padding: 4px 12px;
   background: rgba(201, 162, 39, 0.12);
-  border-radius: 20px;
-  margin-right: 4px;
+  border-radius: 20px; margin-right: 4px;
 }
 
 .compass-status {
-  font-size: 0.85rem;
-  font-weight: 700;
-  margin-top: 12px;
-  padding: 6px 14px;
-  border-radius: 20px;
-  display: inline-block;
+  font-size: 0.85rem; font-weight: 700;
+  margin-top: 12px; padding: 6px 14px;
+  border-radius: 20px; display: inline-block;
 }
 .compass-status.on { background: rgba(34, 197, 94, 0.15); color: #15803D; }
 .compass-status.off { background: rgba(139, 115, 85, 0.15); color: var(--muted); }
 .compass-status.err { background: rgba(220, 38, 38, 0.12); color: #B91C1C; }
 
 .compass-debug {
-  font-size: 0.75rem;
-  color: var(--muted);
-  margin-top: 6px;
-  font-variant-numeric: tabular-nums;
+  font-size: 0.75rem; color: var(--muted);
+  margin-top: 6px; font-variant-numeric: tabular-nums;
   min-height: 16px;
 }
 
@@ -430,13 +401,10 @@ body {
 .compass-btn:disabled { opacity: 0.6; cursor: wait; }
 
 .qibla-hint {
-  font-size: 0.78rem;
-  color: var(--muted);
-  margin-top: 12px;
-  line-height: 1.7;
+  font-size: 0.78rem; color: var(--muted);
+  margin-top: 12px; line-height: 1.7;
 }
 
-/* ===== نافذة المدينة ===== */
 .dialog-overlay {
   position: fixed; inset: 0;
   background: rgba(45, 27, 21, 0.55);
@@ -585,6 +553,7 @@ body {
     <div class="qibla-card">
       <div class="compass-wrap">
         <div class="compass">
+          <div class="view-marker"></div>
           <div class="compass-face" id="compassFace"></div>
           <div class="compass-needle" id="compassNeedle">
             <div class="needle-shaft"></div>
@@ -595,10 +564,10 @@ body {
       </div>
 
       <div class="qibla-info">
-        زاوية القبلة من الشمال: <span class="deg" id="qiblaDeg">—</span>
+        Qibla Angle: <span class="deg" id="qiblaDeg">—</span>
       </div>
 
-      <div class="compass-status off" id="compassStatus">البوصلة غير مفعّلة</div>
+      <div class="compass-status off" id="compassStatus">Compass is off</div>
       <div class="compass-debug" id="compassDebug"></div>
 
       <button class="compass-btn" id="compassBtn" onclick="toggleCompass()">
@@ -607,7 +576,7 @@ body {
       </button>
 
       <div class="qibla-hint">
-        الإبرة الذهبية تشير إلى القبلة. أدر هاتفك حتى يظهر 🕋 في الأعلى تماماً.
+        Rotate your phone until 🕋 aligns with the top marker ▲
       </div>
     </div>
   </div>
@@ -892,20 +861,18 @@ function useMyLocation() {
 }
 
 /* ============================================================
-   7) بناء وجه البوصلة (SVG)
+   7) بناء وجه البوصلة (بالإنجليزية)
    ============================================================ */
 function buildCompassFace() {
   const S = 300, cx = 150, cy = 150;
   const outerR = 145;
   const tickOuter = 143;
-  const tickInner = 130;
   const labelR = 108;
   const degreeR = 122;
-  const innerRing = 88;
+  const innerRing = 90;
 
   let svg = `<svg viewBox="0 0 ${S} ${S}" xmlns="http://www.w3.org/2000/svg">`;
 
-  // تعريفات
   svg += `<defs>
     <radialGradient id="faceGrad" cx="50%" cy="45%" r="55%">
       <stop offset="0%" stop-color="#FDF9F3"/>
@@ -916,21 +883,18 @@ function buildCompassFace() {
 
   // الخلفية
   svg += `<circle cx="${cx}" cy="${cy}" r="${outerR}" fill="url(#faceGrad)"/>`;
-
-  // حلقات الحدود
   svg += `<circle cx="${cx}" cy="${cy}" r="${outerR}" fill="none" stroke="#C9A227" stroke-width="2.5"/>`;
-  svg += `<circle cx="${cx}" cy="${cy}" r="${outerR - 5}" fill="none" stroke="#C19A6B" stroke-width="0.8" opacity="0.6"/>`;
-  svg += `<circle cx="${cx}" cy="${cy}" r="${innerRing}" fill="none" stroke="#C19A6B" stroke-width="1" opacity="0.4"/>`;
-  svg += `<circle cx="${cx}" cy="${cy}" r="${innerRing - 5}" fill="none" stroke="#C19A6B" stroke-width="0.5" opacity="0.3"/>`;
+  svg += `<circle cx="${cx}" cy="${cy}" r="${outerR - 5}" fill="none" stroke="#C19A6B" stroke-width="0.8" opacity="0.5"/>`;
+  svg += `<circle cx="${cx}" cy="${cy}" r="${innerRing}" fill="none" stroke="#C19A6B" stroke-width="1" opacity="0.35"/>`;
 
-  // خطوط التدريج
+  // التدريج
   for (let deg = 0; deg < 360; deg += 5) {
     const isCardinal = deg % 90 === 0;
     const isInter = deg % 45 === 0;
     const isMajor = deg % 15 === 0;
 
     let len = 6, w = 0.8, color = '#C19A6B';
-    if (isCardinal) { len = 20; w = 2.5; color = '#6F4E37'; }
+    if (isCardinal) { len = 22; w = 2.5; color = '#3E2723'; }
     else if (isInter) { len = 15; w = 1.8; color = '#8B5A2B'; }
     else if (isMajor) { len = 10; w = 1.3; color = '#8B7355'; }
 
@@ -943,27 +907,18 @@ function buildCompassFace() {
     svg += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${color}" stroke-width="${w}" stroke-linecap="round"/>`;
   }
 
-  // الجهات الأصلية (ش، ق، ج، غ)
+  // الجهات بالإنجليزية
   const cards = [
-    { t: 'ش', d: 0,   c: '#B91C1C', s: 24 },  // الشمال - أحمر
-    { t: 'ق', d: 90,  c: '#6F4E37', s: 22 },  // الشرق
-    { t: 'ج', d: 180, c: '#6F4E37', s: 22 },  // الجنوب
-    { t: 'غ', d: 270, c: '#6F4E37', s: 22 },  // الغرب
+    { t: 'N', d: 0,   c: '#B91C1C', s: 26 },
+    { t: 'E', d: 90,  c: '#3E2723', s: 24 },
+    { t: 'S', d: 180, c: '#3E2723', s: 24 },
+    { t: 'W', d: 270, c: '#3E2723', s: 24 },
   ];
   cards.forEach(({t,d,c,s}) => {
     const rad = (d - 90) * Math.PI / 180;
     const x = cx + Math.cos(rad) * labelR;
     const y = cy + Math.sin(rad) * labelR;
     svg += `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="central" fill="${c}" font-size="${s}" font-weight="700" font-family="Cairo, sans-serif">${t}</text>`;
-  });
-
-  // الجهات الفرعية (نقاط صغيرة)
-  const inters = [45, 135, 225, 315];
-  inters.forEach(d => {
-    const rad = (d - 90) * Math.PI / 180;
-    const x = cx + Math.cos(rad) * labelR;
-    const y = cy + Math.sin(rad) * labelR;
-    svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2" fill="#C19A6B" opacity="0.7"/>`;
   });
 
   // أرقام الدرجات
@@ -1004,13 +959,11 @@ function calculateQibla(lat, lon) {
   qiblaBearing = qibla;
 
   document.getElementById('qiblaDeg').textContent = qibla.toFixed(1) + '°';
-
-  // عرض مبدئي
   applyCompassUI(compassActive ? currentHeading : 0);
 }
 
 /* ============================================================
-   9) البوصلة الحيّة
+   9) البوصلة الحيّة (سريعة وخفيفة)
    ============================================================ */
 let compassActive = false;
 let compassHandler = null;
@@ -1018,23 +971,19 @@ let currentHeading = 0;
 let sensorConfirmed = false;
 let watchdogTimer = null;
 
-function isIOS() {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-}
+// متغيرات التنعيم السريع
+let targetHeading = 0;
+let animationFrame = null;
 
 async function toggleCompass() {
-  if (compassActive) {
-    stopCompass();
-    return;
-  }
+  if (compassActive) { stopCompass(); return; }
 
   if (typeof DeviceOrientationEvent !== 'undefined' &&
       typeof DeviceOrientationEvent.requestPermission === 'function') {
     try {
       const perm = await DeviceOrientationEvent.requestPermission();
       if (perm !== 'granted') {
-        alert('تم رفض إذن البوصلة. يمكنك تفعيله من إعدادات Safari > الموقع.');
+        alert('تم رفض إذن البوصلة. يمكنك تفعيله من إعدادات Safari.');
         return;
       }
     } catch (err) {
@@ -1044,7 +993,7 @@ async function toggleCompass() {
   }
 
   if (!('DeviceOrientationEvent' in window)) {
-    setCompassStatus('err', '⚠️ جهازك لا يدعم البوصلة');
+    setCompassStatus('err', '⚠️ Device does not support compass');
     return;
   }
 
@@ -1054,8 +1003,9 @@ async function toggleCompass() {
 function startCompass() {
   compassActive = true;
   currentHeading = 0;
+  targetHeading = 0;
   sensorConfirmed = false;
-  setCompassStatus('on', '⏳ جاري تفعيل البوصلة...');
+  setCompassStatus('on', '⏳ Starting compass...');
 
   if (compassHandler) {
     window.removeEventListener('deviceorientationabsolute', compassHandler, true);
@@ -1072,17 +1022,8 @@ function startCompass() {
     }
 
     if (heading === null) return;
-
     sensorConfirmed = true;
-
-    // تنعيم EMA
-    let delta = heading - currentHeading;
-    if (delta > 180) delta -= 360;
-    if (delta < -180) delta += 360;
-    currentHeading = (currentHeading + delta * 0.25 + 360) % 360;
-
-    applyCompassUI(currentHeading);
-    updateDebug();
+    targetHeading = heading;
   };
 
   if ('ondeviceorientationabsolute' in window) {
@@ -1091,16 +1032,48 @@ function startCompass() {
     window.addEventListener('deviceorientation', compassHandler, true);
   }
 
+  // حلقة رسم مستمرة (60fps) مع تنعيم سريع
+  startCompassLoop();
+
   clearTimeout(watchdogTimer);
   watchdogTimer = setTimeout(() => {
     if (compassActive && !sensorConfirmed) {
-      setCompassStatus('err', '⚠️ لم يستجب حساس البوصلة. جرّب تحريك الهاتف على شكل ∞');
+      setCompassStatus('err', '⚠️ Sensor not responding. Move phone in ∞ shape');
     } else if (compassActive && sensorConfirmed) {
-      setCompassStatus('on', '🧭 البوصلة تعمل');
+      setCompassStatus('on', '🧭 Compass active');
     }
-  }, 3000);
+  }, 2500);
 
   updateDebug();
+}
+
+function startCompassLoop() {
+  if (animationFrame) cancelAnimationFrame(animationFrame);
+
+  let lastTime = performance.now();
+
+  function loop(now) {
+    if (!compassActive) return;
+
+    const dt = Math.min((now - lastTime) / 1000, 0.1);
+    lastTime = now;
+
+    // حساب الفرق مع التعامل مع الانتقال 0/360
+    let delta = targetHeading - currentHeading;
+    if (delta > 180) delta -= 360;
+    if (delta < -180) delta += 360;
+
+    // تنعيم سريع: يستجيب خلال ~0.2 ثانية
+    const smoothing = 1 - Math.pow(0.001, dt);
+    currentHeading = (currentHeading + delta * smoothing + 360) % 360;
+
+    applyCompassUI(currentHeading);
+    updateDebug();
+
+    animationFrame = requestAnimationFrame(loop);
+  }
+
+  animationFrame = requestAnimationFrame(loop);
 }
 
 function stopCompass() {
@@ -1110,8 +1083,12 @@ function stopCompass() {
     window.removeEventListener('deviceorientation', compassHandler, true);
     compassHandler = null;
   }
+  if (animationFrame) {
+    cancelAnimationFrame(animationFrame);
+    animationFrame = null;
+  }
   clearTimeout(watchdogTimer);
-  setCompassStatus('off', 'البوصلة غير مفعّلة');
+  setCompassStatus('off', 'Compass is off');
   const btn = document.getElementById('compassBtn');
   if (btn) btn.querySelector('span:last-child').textContent = 'تفعيل البوصلة الحيّة';
   applyCompassUI(0);
@@ -1134,7 +1111,6 @@ function applyCompassUI(heading) {
 
   // الوجه يدور عكس اتجاه الهاتف
   face.style.transform = `rotate(${-heading}deg)`;
-
   // الإبرة تشير إلى القبلة
   needle.style.transform = `rotate(${qiblaBearing - heading}deg)`;
 }
@@ -1142,11 +1118,8 @@ function applyCompassUI(heading) {
 function updateDebug() {
   const dbg = document.getElementById('compassDebug');
   if (!dbg) return;
-  if (!compassActive) {
-    dbg.textContent = '';
-    return;
-  }
-  dbg.textContent = `اتجاه الهاتف: ${currentHeading.toFixed(1)}°  ·  القبلة: ${qiblaBearing.toFixed(1)}°`;
+  if (!compassActive) { dbg.textContent = ''; return; }
+  dbg.textContent = `Heading: ${currentHeading.toFixed(1)}°  ·  Qibla: ${qiblaBearing.toFixed(1)}°`;
 }
 
 /* ============================================================
