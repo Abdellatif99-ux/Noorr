@@ -710,6 +710,7 @@ function goTo(pageId, navBtn) {
    ============================================================ */
 const KEY_CITY = 'nur_city_v1';
 const KEY_COORDS = 'nur_coords_v1';
+const KEY_COMPASS_OFFSET = 'nur_compass_offset_v1';
 
 function getSavedCity() {
   try {
@@ -730,6 +731,13 @@ function getSavedCoords() {
 }
 function saveCoords(lat, lon) {
   localStorage.setItem(KEY_COORDS, JSON.stringify({ lat, lon }));
+}
+function getCompassOffset() {
+  const v = parseFloat(localStorage.getItem(KEY_COMPASS_OFFSET));
+  return isNaN(v) ? 0 : v;
+}
+function setCompassOffset(v) {
+  localStorage.setItem(KEY_COMPASS_OFFSET, String(v));
 }
 
 /* ============================================================
@@ -878,7 +886,7 @@ function useMyLocation() {
 }
 
 /* ============================================================
-   7) بناء وجه البوصلة (بالإنجليزية)
+   7) بناء وجه البوصلة
    ============================================================ */
 function buildCompassFace() {
   const S = 300, cx = 150, cy = 150;
@@ -889,7 +897,6 @@ function buildCompassFace() {
   const innerRing = 90;
 
   let svg = `<svg viewBox="0 0 ${S} ${S}" xmlns="http://www.w3.org/2000/svg">`;
-
   svg += `<defs>
     <radialGradient id="faceGrad" cx="50%" cy="45%" r="55%">
       <stop offset="0%" stop-color="#FDF9F3"/>
@@ -898,18 +905,15 @@ function buildCompassFace() {
     </radialGradient>
   </defs>`;
 
-  // الخلفية
   svg += `<circle cx="${cx}" cy="${cy}" r="${outerR}" fill="url(#faceGrad)"/>`;
   svg += `<circle cx="${cx}" cy="${cy}" r="${outerR}" fill="none" stroke="#C9A227" stroke-width="2.5"/>`;
   svg += `<circle cx="${cx}" cy="${cy}" r="${outerR - 5}" fill="none" stroke="#C19A6B" stroke-width="0.8" opacity="0.5"/>`;
   svg += `<circle cx="${cx}" cy="${cy}" r="${innerRing}" fill="none" stroke="#C19A6B" stroke-width="1" opacity="0.35"/>`;
 
-  // التدريج
   for (let deg = 0; deg < 360; deg += 5) {
     const isCardinal = deg % 90 === 0;
     const isInter = deg % 45 === 0;
     const isMajor = deg % 15 === 0;
-
     let len = 6, w = 0.8, color = '#C19A6B';
     if (isCardinal) { len = 22; w = 2.5; color = '#3E2723'; }
     else if (isInter) { len = 15; w = 1.8; color = '#8B5A2B'; }
@@ -920,11 +924,9 @@ function buildCompassFace() {
     const y1 = cy + Math.sin(rad) * tickOuter;
     const x2 = cx + Math.cos(rad) * (tickOuter - len);
     const y2 = cy + Math.sin(rad) * (tickOuter - len);
-
     svg += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${color}" stroke-width="${w}" stroke-linecap="round"/>`;
   }
 
-  // الجهات بالإنجليزية
   const cards = [
     { t: 'N', d: 0,   c: '#B91C1C', s: 26 },
     { t: 'E', d: 90,  c: '#3E2723', s: 24 },
@@ -938,7 +940,6 @@ function buildCompassFace() {
     svg += `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="central" fill="${c}" font-size="${s}" font-weight="700" font-family="Cairo, sans-serif">${t}</text>`;
   });
 
-  // أرقام الدرجات
   const degs = [
     { t: '0°',   d: 0 },
     { t: '90°',  d: 90 },
@@ -980,17 +981,18 @@ function calculateQibla(lat, lon) {
 }
 
 /* ============================================================
-   9) البوصلة الحيّة (سريعة وخفيفة)
+   9) البوصلة الحيّة + المعايرة
    ============================================================ */
 let compassActive = false;
 let compassHandler = null;
-let currentHeading = 0;
+let currentHeading = 0;      // الزاوية المصحّحة (بعد إضافة الـ offset)
+let rawHeading = 0;          // الزاوية الخام من الحساس
+let compassOffset = 0;       // إزاحة المعايرة
 let sensorConfirmed = false;
+let sensorIsAbsolute = false;
 let watchdogTimer = null;
-
-// متغيرات التنعيم السريع
-let targetHeading = 0;
 let animationFrame = null;
+let targetHeading = 0;
 
 async function toggleCompass() {
   if (compassActive) { stopCompass(); return; }
@@ -1020,8 +1022,11 @@ async function toggleCompass() {
 function startCompass() {
   compassActive = true;
   currentHeading = 0;
+  rawHeading = 0;
   targetHeading = 0;
+  compassOffset = getCompassOffset(); // نُحمّل الإزاحة المحفوظة
   sensorConfirmed = false;
+  sensorIsAbsolute = false;
   setCompassStatus('on', '⏳ Starting compass...');
 
   if (compassHandler) {
@@ -1031,25 +1036,50 @@ function startCompass() {
 
   compassHandler = function(e) {
     let heading = null;
+    let isAbsolute = false;
 
+    // iOS Safari
     if (typeof e.webkitCompassHeading === 'number' && e.webkitCompassHeading >= 0) {
       heading = e.webkitCompassHeading;
-    } else if (typeof e.alpha === 'number' && e.alpha !== null && !isNaN(e.alpha)) {
-      heading = (360 - e.alpha) % 360;
+      isAbsolute = true;
+    }
+    // Android: نتحقق من أن القراءة مطلقة
+    else if (typeof e.alpha === 'number' && e.alpha !== null && !isNaN(e.alpha)) {
+      if (e.type === 'deviceorientationabsolute' || e.absolute === true) {
+        heading = (360 - e.alpha) % 360;
+        isAbsolute = true;
+      } else {
+        // قراءة نسبية - نحتفظ بها لكن نُعلّم أنها غير مطلقة
+        heading = (360 - e.alpha) % 360;
+        isAbsolute = false;
+      }
     }
 
     if (heading === null) return;
-    sensorConfirmed = true;
-    targetHeading = heading;
+
+    if (!sensorConfirmed) {
+      sensorConfirmed = true;
+      sensorIsAbsolute = isAbsolute;
+      // إذا اكتشفنا أنها مطلقة، نُصفّر الإزاحة القديمة
+      if (isAbsolute && compassOffset !== 0) {
+        // لا نمسح الإزاحة تلقائياً لأن المستخدم قد يعايرة يدوياً
+      }
+      // نُظهر زر المعايرة إذا كانت القراءة نسبية
+      const calBtn = document.getElementById('calibrateBtn');
+      if (calBtn) {
+        calBtn.style.display = isAbsolute ? 'none' : 'flex';
+      }
+    }
+
+    rawHeading = heading;
+    // نُطبّق الإزاحة
+    targetHeading = (heading - compassOffset + 360) % 360;
   };
 
-  if ('ondeviceorientationabsolute' in window) {
-    window.addEventListener('deviceorientationabsolute', compassHandler, true);
-  } else {
-    window.addEventListener('deviceorientation', compassHandler, true);
-  }
+  // نستمع للحدثين معاً
+  window.addEventListener('deviceorientationabsolute', compassHandler, true);
+  window.addEventListener('deviceorientation', compassHandler, true);
 
-  // حلقة رسم مستمرة (60fps) مع تنعيم سريع
   startCompassLoop();
 
   clearTimeout(watchdogTimer);
@@ -1057,39 +1087,34 @@ function startCompass() {
     if (compassActive && !sensorConfirmed) {
       setCompassStatus('err', '⚠️ Sensor not responding. Move phone in ∞ shape');
     } else if (compassActive && sensorConfirmed) {
-      setCompassStatus('on', '🧭 Compass active');
+      if (sensorIsAbsolute) {
+        setCompassStatus('on', '🧭 Compass active (absolute)');
+      } else {
+        setCompassStatus('on', '⚠️ Relative sensor — press Calibrate');
+      }
     }
   }, 2500);
-
-  updateDebug();
 }
 
 function startCompassLoop() {
   if (animationFrame) cancelAnimationFrame(animationFrame);
-
   let lastTime = performance.now();
 
   function loop(now) {
     if (!compassActive) return;
-
     const dt = Math.min((now - lastTime) / 1000, 0.1);
     lastTime = now;
 
-    // حساب الفرق مع التعامل مع الانتقال 0/360
     let delta = targetHeading - currentHeading;
     if (delta > 180) delta -= 360;
     if (delta < -180) delta += 360;
-
-    // تنعيم سريع: يستجيب خلال ~0.2 ثانية
     const smoothing = 1 - Math.pow(0.001, dt);
     currentHeading = (currentHeading + delta * smoothing + 360) % 360;
 
     applyCompassUI(currentHeading);
     updateDebug();
-
     animationFrame = requestAnimationFrame(loop);
   }
-
   animationFrame = requestAnimationFrame(loop);
 }
 
@@ -1108,6 +1133,8 @@ function stopCompass() {
   setCompassStatus('off', 'Compass is off');
   const btn = document.getElementById('compassBtn');
   if (btn) btn.querySelector('span:last-child').textContent = 'تفعيل البوصلة الحيّة';
+  const calBtn = document.getElementById('calibrateBtn');
+  if (calBtn) calBtn.style.display = 'none';
   applyCompassUI(0);
   updateDebug();
 }
@@ -1125,10 +1152,7 @@ function applyCompassUI(heading) {
   const face = document.getElementById('compassFace');
   const needle = document.getElementById('compassNeedle');
   if (!face || !needle) return;
-
-  // الوجه يدور عكس اتجاه الهاتف
   face.style.transform = `rotate(${-heading}deg)`;
-  // الإبرة تشير إلى القبلة
   needle.style.transform = `rotate(${qiblaBearing - heading}deg)`;
 }
 
@@ -1136,11 +1160,33 @@ function updateDebug() {
   const dbg = document.getElementById('compassDebug');
   if (!dbg) return;
   if (!compassActive) { dbg.textContent = ''; return; }
-  dbg.textContent = `Heading: ${currentHeading.toFixed(1)}°  ·  Qibla: ${qiblaBearing.toFixed(1)}°`;
+  const abs = sensorIsAbsolute ? '✓ absolute' : '✗ relative';
+  dbg.textContent = `Heading: ${currentHeading.toFixed(1)}°  ·  Qibla: ${qiblaBearing.toFixed(1)}°  ·  ${abs}`;
 }
 
 /* ============================================================
-   10) التاريخ
+   10) المعايرة
+   ============================================================ */
+function calibrateNorth() {
+  if (!compassActive || !sensorConfirmed) {
+    alert('فعّل البوصلة أولاً وانتظر حتى تستقر القراءة.');
+    return;
+  }
+  // نستخدم القراءة الخام الحالية كإزاحة، بحيث تصبح الزاوية = 0° (شمال)
+  const newOffset = rawHeading;
+  setCompassOffset(newOffset);
+  compassOffset = newOffset;
+  // إعادة حساب القراءة الحالية بناءً على الإزاحة الجديدة
+  targetHeading = (rawHeading - compassOffset + 360) % 360;
+
+  setCompassStatus('on', '✅ تمت المعايرة — البوصلة دقيقة الآن');
+  setTimeout(() => {
+    if (compassActive) setCompassStatus('on', sensorIsAbsolute ? '🧭 Compass active' : '🧭 Compass active (calibrated)');
+  }, 2000);
+}
+
+/* ============================================================
+   11) التاريخ
    ============================================================ */
 function renderDates(dateInfo) {
   const h = dateInfo.hijri, g = dateInfo.gregorian;
@@ -1150,7 +1196,7 @@ function renderDates(dateInfo) {
 }
 
 /* ============================================================
-   11) قائمة الصلوات
+   12) قائمة الصلوات
    ============================================================ */
 const PRAYERS = [
   { key: 'Fajr',    name: 'الفجر',   icon: '🌄' },
@@ -1176,7 +1222,7 @@ function renderPrayerList(timings) {
 function cleanTime(t) { return (t || '').split(' ')[0]; }
 
 /* ============================================================
-   12) العد التنازلي
+   13) العد التنازلي
    ============================================================ */
 function buildPrayerDates() {
   const timings = prayerData.timings;
@@ -1232,15 +1278,13 @@ function updateCountdown() {
   const m = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
   const s = String(total % 60).padStart(2, '0');
   const text = `${h}:${m}:${s}`;
-
   document.getElementById('npCountdown').textContent = text;
   document.getElementById('homeCountdown').textContent = text;
-
   if (total <= 0) renderNextPrayer();
 }
 
 /* ============================================================
-   13) التحميل الأول
+   14) التحميل الأول
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   buildCompassFace();
@@ -1253,6 +1297,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadPrayerByCity(city, country);
   }
 });
+
 </script>
 
 </body>
