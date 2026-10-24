@@ -1135,14 +1135,18 @@ input:checked + .slider:before { transform: translateX(22px); }
    ============================================================ */
 function goTo(pageId, navBtn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + pageId).classList.add('active');
+  const pageEl = document.getElementById('page-' + pageId);
+  if (pageEl) pageEl.classList.add('active');
 
   const buttons = document.querySelectorAll('.nav-item');
   buttons.forEach(b => b.classList.remove('active'));
-  if (typeof navBtn === 'number') {
-    if (navBtn < buttons.length) buttons[navBtn]?.classList.add('active');
-  } else if (navBtn) {
-    navBtn.classList.add('active');
+  
+  if (navBtn) {
+    if (typeof navBtn === 'number') {
+      if (buttons[navBtn]) buttons[navBtn].classList.add('active');
+    } else {
+      navBtn.classList.add('active');
+    }
   }
 
   window.scrollTo(0, 0);
@@ -1260,7 +1264,6 @@ function toggleNotifications() {
     startReminderChecker();
     if (prayerData) schedulePrayerNotifications();
   } else {
-    // إيقاف المؤقتات
     if (reminderInterval) clearInterval(reminderInterval);
     if (prayerTimeout1) clearTimeout(prayerTimeout1);
     if (prayerTimeout2) clearTimeout(prayerTimeout2);
@@ -1278,7 +1281,7 @@ function saveReminderTimes() {
 }
 
 let reminderInterval = null;
-let lastNotified = {}; // لتجنب التكرار في نفس الدقيقة
+let lastNotified = {};
 
 function startReminderChecker() {
   if (reminderInterval) clearInterval(reminderInterval);
@@ -1293,12 +1296,11 @@ function startReminderChecker() {
     
     const times = JSON.parse(localStorage.getItem(KEY_REMINDER_TIMES) || '{}');
     
-    // التحقق من كل نوع إشعار
     checkAndNotify('morning', times.morning, currentTime, today, '🌅 أذكار الصباح', 'حان وقت أذكار الصباح، ابدأ يومك بذكر الله.');
     checkAndNotify('evening', times.evening, currentTime, today, '🌇 أذكار المساء', 'حان وقت أذكار المساء، لا تنسَ وردك.');
     checkAndNotify('sleep', times.sleep, currentTime, today, '🌙 أذكار النوم', 'قبل أن تنام، اقرأ أذكار النوم.');
     checkAndNotify('quran', times.quran, currentTime, today, '📖 الورد القرآني', 'حان وقت قراءة وردك اليومي من القرآن الكريم.');
-  }, 30000); // يفحص كل 30 ثانية
+  }, 30000);
 }
 
 function checkAndNotify(key, targetTime, currentTime, today, title, body) {
@@ -1337,33 +1339,28 @@ function schedulePrayerNotifications() {
   const { next } = findNextAndCurrent(dates);
   const now = new Date();
   
-  // حساب الوقت المتبقي بالمللي ثانية
   const timeToPrayer = next.date - now;
-  const timeToAlert = timeToPrayer - (10 * 60 * 1000); // 10 دقائق قبل
+  const timeToAlert = timeToPrayer - (10 * 60 * 1000);
 
-  // جدولة إشعار قبل 10 دقائق
   if (timeToAlert > 0) {
     prayerTimeout1 = setTimeout(() => {
       showNotification('🕌 اقترب وقت الصلاة', `باقي 10 دقائق على صلاة ${next.name}. استعد للصلاة.`, 'prayer-alert');
     }, timeToAlert);
   }
 
-  // جدولة إشعار الأذان (عند الوقت)
   if (timeToPrayer > 0) {
     prayerTimeout2 = setTimeout(() => {
       showNotification('🕌 حان وقت الصلاة', `حان الآن وقت صلاة ${next.name}. تقبل الله منا ومنكم.`, 'prayer-adhan');
       
-      // تشغيل صوت الأذان (بشرط أن التطبيق مفتوح أو في الخلفية)
       try {
         const adhan = document.getElementById('adhanAudio');
         adhan.play().catch(e => console.log('تعذر تشغيل الأذان تلقائياً:', e));
       } catch(e) {}
       
-      // إعادة الجدولة للصلاة القادمة بعد انتهاء الوقت
       setTimeout(() => {
         renderNextPrayer();
         schedulePrayerNotifications();
-      }, 60000); // بعد دقيقة نجدول الصلاة التالية
+      }, 60000);
       
     }, timeToPrayer);
   }
@@ -1430,7 +1427,7 @@ async function loadPrayerByCity(city, country) {
     renderPrayerList(prayerData.timings);
     renderNextPrayer();
     startCountdown();
-    schedulePrayerNotifications(); // جدولة الإشعارات
+    schedulePrayerNotifications();
     showPrayerState('content');
   } catch (err) { showPrayerState('error', err.message); }
 }
@@ -1461,7 +1458,7 @@ async function loadPrayerByCoords(lat, lon) {
     renderNextPrayer();
     startCountdown();
     calculateQibla(lat, lon);
-    schedulePrayerNotifications(); // جدولة الإشعارات
+    schedulePrayerNotifications();
     showPrayerState('content');
   } catch (err) { showPrayerState('error', err.message); }
 }
@@ -2320,7 +2317,8 @@ function renderBooksList() {
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   buildCompassFace();
-  loadSettings(); // تحميل الإعدادات المحفوظة مسبقاً
+  loadSettings();
+  renderBooksList(); // تم إضافتها هنا لضمان تحميلها مباشرة
 
   const coords = getSavedCoords();
   if (coords) loadPrayerByCoords(coords.lat, coords.lon);
