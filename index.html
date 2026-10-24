@@ -1170,24 +1170,19 @@ const KEY_NOTIFICATIONS = 'nur_notifications_enabled';
 const KEY_REMINDER_TIMES = 'nur_reminder_times';
 
 function loadSettings() {
-  // الوضع الليلي
   const isDark = localStorage.getItem(KEY_DARK_MODE) === 'true';
   document.getElementById('darkModeToggle').checked = isDark;
   if (isDark) document.body.classList.add('dark-mode');
 
-  // حجم الخط
   const savedFontSize = parseInt(localStorage.getItem(KEY_FONT_SIZE)) || 0;
   applyFontSize(savedFontSize);
 
-  // طريقة الحساب
   const savedMethod = localStorage.getItem(KEY_CALC_METHOD) || '3';
   document.getElementById('calcMethodSelect').value = savedMethod;
 
-  // الإشعارات
   const notifEnabled = localStorage.getItem(KEY_NOTIFICATIONS) === 'true';
   document.getElementById('notificationsToggle').checked = notifEnabled;
 
-  // أوقات التذكير
   const times = JSON.parse(localStorage.getItem(KEY_REMINDER_TIMES) || '{}');
   if (times.morning) document.getElementById('timeMorning').value = times.morning;
   if (times.evening) document.getElementById('timeEvening').value = times.evening;
