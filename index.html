@@ -620,9 +620,10 @@ body {
   font-family: inherit; font-size: 0.85rem; font-weight: 700;
   cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center;
   gap: 6px; width: 100%; box-shadow: 0 4px 12px rgba(111, 78, 55, 0.2);
-  transition: transform 0.15s;
+  transition: all 0.2s;
 }
 .btn-download:active { transform: scale(0.97); }
+.btn-download:disabled { cursor: wait; }
 
 /* ===== صفحة الإعدادات ===== */
 .settings-container {
@@ -2222,68 +2223,68 @@ function decrementZikr(index, maxCount) {
 }
 
 /* ============================================================
-   7) نظام الكتب (تحميل فقط)
+   7) نظام الكتب (تحميل داخلي)
    ============================================================ */
 const BOOKS_DATA = {
   fathulQawi: {
     title: 'فتح القوي المتين في شرح الأربعين وتتمة الخمسين',
     author: 'عبد المحسن العباد',
     coverIcon: '📜',
-    downloadUrl: 'https://archive.org/download/fath-ul-qawi-al-mateen/fath-ul-qawi-al-mateen.pdf'
+    downloadUrl: 'https://archive.org/download/Boook1316111111111111111111111111111111111111111111/0809Pdf___.pdf'
   },
   sharhArbaeen: {
     title: 'شرح الأربعين النووية',
     author: 'محمد بن صالح العثيمين',
     coverIcon: '📖',
-    downloadUrl: 'https://archive.org/download/sharh-arbaeen-nawawi-uthaymeen/sharh-arbaeen-nawawi-uthaymeen.pdf'
+    downloadUrl: 'https://archive.org/download/kotob_ibn-othaimeen/Sharh_40_Al-Nawawiya.pdf'
   },
   riyad: {
     title: 'رياض الصالحين',
     author: 'الإمام النووي',
     coverIcon: '🌿',
-    downloadUrl: 'https://archive.org/download/riyad_saliheen/riyad_saliheen.pdf'
+    downloadUrl: 'https://archive.org/download/alfirdwsiy2018_gmail_2355/2355%20-%20رياض%20الصالحين%20-%20ت%20عبد%20المحسن%20التركي%20كتاب%20اقرا%20اونلاين.pdf'
   },
   tafsirSaadi: {
     title: 'تفسير السعدي (تيسير الكريم الرحمن)',
     author: 'عبد الرحمن بن ناصر السعدي',
     coverIcon: '📖',
-    downloadUrl: 'https://archive.org/download/tafsir-al-saadi/tafsir-al-saadi.pdf'
+    downloadUrl: 'https://archive.org/download/TfsirIbnSadi/TfsirIbnSadi.pdf'
   },
   tibNabawi: {
     title: 'الطب النبوي',
     author: 'ابن قيم الجوزية',
     coverIcon: '🌿',
-    downloadUrl: 'https://archive.org/download/tib-nabawi/tib-nabawi.pdf'
+    downloadUrl: 'https://archive.org/download/iqraaEBook59/الطب_النبوي.pdf'
   },
   sifatSalat: {
     title: 'صفة صلاة النبي ﷺ',
     author: 'محمد ناصر الدين الألباني',
     coverIcon: '🕌',
-    downloadUrl: 'https://archive.org/download/sifat-salat-nabi/sifat-salat-nabi.pdf'
+    downloadUrl: 'https://archive.org/download/20230403_20230403_2036/صفة%20صلاة%20النبي%20ﷺ%20للألباني%20-%20تحقيق%20د.%20سامي%20بن%20محمد%20الخليل.pdf'
   },
   dawaDawa: {
     title: 'الداء والدواء',
     author: 'ابن قيم الجوزية',
     coverIcon: '💊',
-    downloadUrl: 'https://archive.org/download/al-dawa-al-dawa/al-dawa-al-dawa.pdf'
+    downloadUrl: 'https://archive.org/download/WAQ90079s/90079s.pdf'
   },
   muqaddimah: {
     title: 'مقدمة ابن خلدون',
     author: 'عبد الرحمن بن خلدون',
     coverIcon: '📜',
-    downloadUrl: 'https://archive.org/download/muqaddimah-ibn-khaldun/muqaddimah-ibn-khaldun.pdf'
+    downloadUrl: 'https://archive.org/download/MuqaddimahIbnKhaldun/MuqVol1.pdf'
   },
   bidaya: {
     title: 'البداية والنهاية',
     author: 'الحافظ ابن كثير',
     coverIcon: '📚',
-    downloadUrl: 'https://archive.org/download/al-bidaya-wa-al-nihaya/al-bidaya-wa-al-nihaya.pdf'
+    downloadUrl: 'https://archive.org/download/BidayahwanNihayah/0a.pdf'
   },
   zadMaad: {
     title: 'زاد المعاد في هدي خير العباد',
     author: 'ابن قيم الجوزية',
     coverIcon: '🌿',
-    downloadUrl: 'https://archive.org/download/zad-al-maad/zad-al-maad.pdf'
+    downloadUrl: 'https://archive.org/download/4kotob.com/zad-al-maad.pdf'
   }
 };
 
@@ -2298,7 +2299,9 @@ function renderBooksList() {
           <div class="book-title">${b.title}</div>
           <div class="book-author">${b.author}</div>
           <div class="book-actions">
-            <a href="${b.downloadUrl}" target="_blank" class="btn-download" style="text-decoration:none;">⬇️ تحميل الكتاب (PDF)</a>
+            <button onclick="downloadBook('${b.downloadUrl}', '${b.title}', this)" class="btn-download">
+              ⬇️ تحميل الكتاب (PDF)
+            </button>
           </div>
         </div>
       </div>
@@ -2307,13 +2310,62 @@ function renderBooksList() {
   document.getElementById('booksListContent').innerHTML = html;
 }
 
+async function downloadBook(url, title, btn) {
+  const originalText = btn.innerHTML;
+  try {
+    btn.innerHTML = '⏳ جاري التحميل...';
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('فشل الاتصال');
+    
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = `${title}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    
+    window.URL.revokeObjectURL(blobUrl);
+
+    btn.innerHTML = '✅ تم التحميل بنجاح';
+    btn.style.background = '#22C55E'; // لون أخضر
+    
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.style.background = '';
+      btn.disabled = false;
+      btn.style.opacity = '1';
+    }, 3000);
+
+  } catch (error) {
+    console.error('خطأ في التحميل:', error);
+    btn.innerHTML = '❌ فشل التحميل، جرب مرة أخرى';
+    btn.style.background = '#DC2626'; // لون أحمر
+    
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.style.background = '';
+      btn.disabled = false;
+      btn.style.opacity = '1';
+    }, 3000);
+    
+    // خيار احتياطي في حال فشل CORS
+    window.open(url, '_blank');
+  }
+}
+
 /* ============================================================
    8) التحميل الأول
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   buildCompassFace();
   loadSettings();
-  renderBooksList(); // تم إضافتها هنا لضمان تحميلها مباشرة
+  renderBooksList();
 
   const coords = getSavedCoords();
   if (coords) loadPrayerByCoords(coords.lat, coords.lon);
